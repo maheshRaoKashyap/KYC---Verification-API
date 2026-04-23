@@ -1,0 +1,12 @@
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\config\KafkaConfig.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\config\SecurityConfig.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\controller\KycController.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\dto\KycDtos.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\entity\KycDetail.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\event\KycEvent.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\event\KycEventProducer.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\exception\GlobalExceptionHandler.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\exception\KycException.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\KycServiceApplication.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\repository\KycDetailRepository.java
+C:\Users\mahes\OneDrive\Documents\Projects\kyc-platform\kyc-service\src\main\java\com\kyc\kyc\service\KycService.java

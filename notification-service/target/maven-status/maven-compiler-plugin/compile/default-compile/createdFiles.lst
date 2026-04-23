@@ -1,0 +1,6 @@
+com\kyc\notification\config\KafkaConsumerConfig.class
+com\kyc\notification\dto\KycEvent.class
+com\kyc\notification\dto\KycEvent$KycEventBuilder.class
+com\kyc\notification\consumer\KycEventConsumer.class
+com\kyc\notification\NotificationServiceApplication.class
+com\kyc\notification\service\NotificationService.class

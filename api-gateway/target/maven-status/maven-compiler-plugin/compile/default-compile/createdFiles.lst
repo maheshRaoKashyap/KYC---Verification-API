@@ -1,0 +1,3 @@
+com\kyc\gateway\util\JwtUtil.class
+com\kyc\gateway\ApiGatewayApplication.class
+com\kyc\gateway\filter\AuthenticationFilter.class

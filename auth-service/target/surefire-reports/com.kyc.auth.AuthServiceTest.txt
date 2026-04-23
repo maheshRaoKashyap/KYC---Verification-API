@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.kyc.auth.AuthServiceTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.649 s -- in com.kyc.auth.AuthServiceTest

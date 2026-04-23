@@ -1,0 +1,212 @@
+name: KYC Platform CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/kyc-platform
+  JAVA_VERSION: '17'
+
+jobs:
+  # ─────────────────── Test Stage ───────────────────
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpassword
+          MYSQL_DATABASE: kyc_auth_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Run tests - Auth Service
+        run: |
+          cd auth-service
+          mvn clean test -Dspring.datasource.url=jdbc:mysql://localhost:3306/kyc_auth_db?useSSL=false\&serverTimezone=UTC\&allowPublicKeyRetrieval=true \
+            -Dspring.datasource.username=root \
+            -Dspring.datasource.password=testpassword
+        working-directory: .
+
+      - name: Run tests - KYC Service
+        run: |
+          cd kyc-service
+          mvn clean test
+        working-directory: .
+
+      - name: Run tests - User Service
+        run: |
+          cd user-service
+          mvn clean test
+        working-directory: .
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: |
+            */target/surefire-reports/
+            */target/site/
+
+  # ─────────────────── Build Stage ───────────────────
+  build-and-push:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    strategy:
+      matrix:
+        service:
+          - eureka-server
+          - api-gateway
+          - auth-service
+          - user-service
+          - kyc-service
+          - admin-service
+          - notification-service
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build JAR - ${{ matrix.service }}
+        run: |
+          cd ${{ matrix.service }}
+          mvn clean package -DskipTests
+        working-directory: .
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ matrix.service }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./${{ matrix.service }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ─────────────────── Deploy to Dev ───────────────────
+  deploy-dev:
+    name: Deploy to Dev Environment
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/develop'
+    environment: development
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure kubectl
+        run: echo "${{ secrets.KUBE_CONFIG_DEV }}" | base64 -d > kubeconfig.yaml
+
+      - name: Deploy to dev namespace
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl apply -f k8s/01-infrastructure.yaml -n kyc-platform-dev
+          kubectl apply -f k8s/02-services.yaml -n kyc-platform-dev
+          kubectl set image deployment/auth-service \
+            auth-service=${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/auth-service:develop \
+            -n kyc-platform-dev
+          kubectl rollout status deployment/auth-service -n kyc-platform-dev --timeout=120s
+
+  # ─────────────────── Deploy to Prod ───────────────────
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Configure kubectl for production
+        run: echo "${{ secrets.KUBE_CONFIG_PROD }}" | base64 -d > kubeconfig.yaml
+
+      - name: Apply Kubernetes manifests
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl apply -f k8s/01-infrastructure.yaml
+          kubectl apply -f k8s/02-services.yaml
+
+      - name: Rolling update all services
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          SHA=${{ github.sha }}
+          for svc in auth-service user-service kyc-service admin-service notification-service api-gateway eureka-server; do
+            IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/${svc}:main-${SHA:0:7}"
+            kubectl set image deployment/${svc} ${svc}=${IMAGE} -n kyc-platform || true
+            kubectl rollout status deployment/${svc} -n kyc-platform --timeout=180s || true
+          done
+
+      - name: Verify deployment health
+        run: |
+          export KUBECONFIG=kubeconfig.yaml
+          kubectl get pods -n kyc-platform
+          kubectl get services -n kyc-platform
+
+      - name: Notify on success
+        if: success()
+        run: echo "✅ Deployment to production successful! SHA=${{ github.sha }}"
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "❌ Deployment to production FAILED! SHA=${{ github.sha }}"

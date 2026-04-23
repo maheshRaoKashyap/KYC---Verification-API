@@ -1,0 +1,16 @@
+com\kyc\admin\dto\AdminDtos$ApiResponse.class
+com\kyc\admin\dto\AdminDtos$PagedResponse$PagedResponseBuilder.class
+com\kyc\admin\dto\AdminDtos.class
+com\kyc\admin\config\SecurityConfig.class
+com\kyc\admin\AdminServiceApplication.class
+com\kyc\admin\config\SecurityConfig$JwtFilter.class
+com\kyc\admin\dto\AdminDtos$DashboardStats$DashboardStatsBuilder.class
+com\kyc\admin\dto\AdminDtos$PagedResponse.class
+com\kyc\admin\dto\AdminDtos$DashboardStats.class
+com\kyc\admin\dto\AdminDtos$KycAdminDetail.class
+com\kyc\admin\dto\AdminDtos$UserSummary.class
+com\kyc\admin\service\AdminService.class
+com\kyc\admin\dto\AdminDtos$UserSummary$UserSummaryBuilder.class
+com\kyc\admin\dto\AdminDtos$KycAdminDetail$KycAdminDetailBuilder.class
+com\kyc\admin\dto\AdminDtos$ApiResponse$ApiResponseBuilder.class
+com\kyc\admin\controller\AdminController.class

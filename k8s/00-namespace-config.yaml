@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kyc-platform
+  labels:
+    app: kyc-platform
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kyc-common-config
+  namespace: kyc-platform
+data:
+  JWT_SECRET: "bXlTdXBlclNlY3JldEtleUZvcktZQ1BsYXRmb3JtMjAyNFZlcnkxMjM0NTY3ODk="
+  EUREKA_URL: "http://eureka-server:8761/eureka/"
+  KAFKA_SERVERS: "kafka:9092"
+  DB_HOST: "mysql"
+  DB_PORT: "3306"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kyc-secrets
+  namespace: kyc-platform
+type: Opaque
+stringData:
+  DB_PASSWORD: "root"
+  SMTP_PASSWORD: ""

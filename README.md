@@ -1,6 +1,5 @@
 
-
-div align="center">
+<div align="center">
 
 # 🪪 **KYC Verification Platform**
 ## A Production-Ready Fintech System for Identity Verification at Scale
@@ -18,7 +17,6 @@ div align="center">
 [Architecture](#-architecture) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start) • [API Documentation](#-api-documentation) • [Performance](#-performance-metrics) • [Contributing](#-contributing)
 
 </div>
-
 
 ## **Project Overview**
 

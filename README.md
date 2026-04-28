@@ -1,5 +1,24 @@
 
 
+div align="center">
+
+# 🪪 **KYC Verification Platform**
+## A Production-Ready Fintech System for Identity Verification at Scale
+
+[![Java](https://img.shields.io/badge/Java-17-orange?logo=java)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green?logo=spring)](https://spring.io/projects/spring-boot)
+[![Kafka](https://img.shields.io/badge/Apache%20Kafka-7.5-red?logo=apache-kafka)](https://kafka.apache.org/)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-blue?logo=kubernetes)](https://kubernetes.io/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql)](https://www.mysql.com/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+**A scalable, fault-tolerant, event-driven KYC verification system built with Java microservices, Kafka streaming, and Kubernetes orchestration. Handles 1M+ submissions/day with 99.9% uptime.**
+
+[Architecture](#-architecture) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start) • [API Documentation](#-api-documentation) • [Performance](#-performance-metrics) • [Contributing](#-contributing)
+
+</div>
+
 
 ## **Project Overview**
 
@@ -1300,24 +1319,5 @@ spec:
 ```
 
 ---
-
-div align="center">
-
-# 🪪 **KYC Verification Platform**
-## A Production-Ready Fintech System for Identity Verification at Scale
-
-[![Java](https://img.shields.io/badge/Java-17-orange?logo=java)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green?logo=spring)](https://spring.io/projects/spring-boot)
-[![Kafka](https://img.shields.io/badge/Apache%20Kafka-7.5-red?logo=apache-kafka)](https://kafka.apache.org/)
-[![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)](https://www.docker.com/)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-blue?logo=kubernetes)](https://kubernetes.io/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql)](https://www.mysql.com/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-
-**A scalable, fault-tolerant, event-driven KYC verification system built with Java microservices, Kafka streaming, and Kubernetes orchestration. Handles 1M+ submissions/day with 99.9% uptime.**
-
-[Architecture](#-architecture) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start) • [API Documentation](#-api-documentation) • [Performance](#-performance-metrics) • [Contributing](#-contributing)
-
-</div>
 
 ---
